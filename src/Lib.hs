@@ -98,5 +98,13 @@ poblacionActiva pais = poblacionActivaPrivado pais + poblacionActivaPublico pais
 {- 
 ========Punto 3========
 Modelar una receta que consista en prestar 200 millones, y darle a una empresa X la explotación de la “Minería” de un país.
+-}
+type Receta = EstrategiaFMI
+
+receta :: Receta
+receta = (permitirExplotacionDeRecursoNatural "mineria".prestarMillonesDolares 200)
+
+{- 
 Ahora queremos aplicar la receta del punto 3.a al país Namibia (creado en el punto 1.b). Justificar cómo se logra el efecto colateral.
- -}
+-}
+
