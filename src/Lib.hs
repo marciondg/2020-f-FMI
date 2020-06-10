@@ -107,6 +107,9 @@ type Receta = [EstrategiaFMI]
 receta :: Receta
 receta = [permitirExplotacionDe "mineria", prestarMillonesDolares 200]
 
+receta' :: Receta
+receta' = [darBlindaje, reducirIngresoPerCapita 500]
+
 {- 
 Ahora queremos aplicar la receta del punto 3.a al país Namibia (creado en el punto 1.b). Justificar cómo se logra el efecto colateral.
 -}
@@ -142,7 +145,11 @@ totalDeudaFMI :: [Pais]->Dinero
 totalDeudaFMI paises = sum $ map deudaConFMI paises
 
 {-+-+-+-+-+-+-+-+-+-+-+-+
-Indicar en dónde apareció cada uno de los conceptos (solo una vez) y justificar qué ventaja tuvo para resolver el requerimiento. -}
+Indicar en dónde apareció cada uno de los conceptos (solo una vez) y justificar qué ventaja tuvo para resolver el requerimiento. 
+
+En puedenZafar aparece el concepto de composición, aplicacion parcial(elem "petroleo") y orden superior (filter )
+
+-}
 
 
 {- 
@@ -152,3 +159,18 @@ base al siguiente criterio: si aplicamos una a una cada receta, el PBI del país
 Recordamos que el Producto Bruto Interno surge de multiplicar el ingreso per cápita por la población activa (privada y pública). 
 -}
 
+ordenadaDePeorAMejor :: Pais->[Receta]->Bool
+ordenadaDePeorAMejor pais [reseta] = True -- Si ya tengo un solo elemento en la lista para evaluar significa que el ordenamiento se cumple
+ordenadaDePeorAMejor pais (receta1:receta2:recetas) = (pbiPosReceta receta1 pais < pbiPosReceta receta2 pais) && ordenadaDePeorAMejor pais (receta2:recetas)
+
+pbiPosReceta :: Receta->Pais->Dinero
+pbiPosReceta receta = pbi.aplicarReceta receta
+{- 
+========Punto 6========
+Si un país tiene infinitos recursos naturales, modelado con esta función
+recursosNaturalesInfinitos :: [String]
+recursosNaturalesInfinitos = "Energia" : recursosNaturalesInfinitos
+¿qué sucede evaluamos la función 4a con ese país? 
+¿y con la 4b?
+Justifique ambos puntos relacionándolos con algún concepto.
+ -}
