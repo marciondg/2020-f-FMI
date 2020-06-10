@@ -25,6 +25,9 @@ la población activa del sector privado es de 650.000, su riqueza es la minería
 namibia :: Pais
 namibia = Pais 4140 400000 650000 ["mineria", "ecoturismo"] 50000000
 
+argentina :: Pais
+argentina = Pais 11684 4000000  6034000 ["turismo", "petroleo", "agricultura", "mineria", "ganaderia", "pesca"] 300000000000
+
 {- 
 ========Punto 2========
 Implementar las estrategias que forman parte de las recetas del FMI.  
@@ -65,8 +68,8 @@ esto disminuye 2 millones de dólares la deuda que el país mantiene con el FMI 
 sin recurso natural a dicho país. No considerar qué pasa si el país no tiene dicho recurso. 
 -}
 
-permitirExplotacionDeRecursoNatural :: Recurso->EstrategiaFMI
-permitirExplotacionDeRecursoNatural recurso = (regularizarDeuda $ millones 2).perderRecurso recurso
+permitirExplotacionDe :: Recurso->EstrategiaFMI
+permitirExplotacionDe recurso = (regularizarDeuda $ millones 2).perderRecurso recurso
 
 regularizarDeuda :: Dinero->Pais->Pais
 regularizarDeuda dinero = cambiarDeuda (-) dinero
@@ -99,12 +102,53 @@ poblacionActiva pais = poblacionActivaPrivado pais + poblacionActivaPublico pais
 ========Punto 3========
 Modelar una receta que consista en prestar 200 millones, y darle a una empresa X la explotación de la “Minería” de un país.
 -}
-type Receta = EstrategiaFMI
+type Receta = [EstrategiaFMI]
 
 receta :: Receta
-receta = (permitirExplotacionDeRecursoNatural "mineria".prestarMillonesDolares 200)
+receta = [permitirExplotacionDe "mineria", prestarMillonesDolares 200]
 
 {- 
 Ahora queremos aplicar la receta del punto 3.a al país Namibia (creado en el punto 1.b). Justificar cómo se logra el efecto colateral.
+-}
+aplicarReceta :: Receta->Pais->Pais
+aplicarReceta receta pais = foldr ($) pais receta
+
+{- 
+En haskell en sí no existe el efecto, no hay asignacion destructiva. 
+Para lograr algo similar lo que se puede hacer es pasarle a funciones el resultado de otras funciones. 
+Si lo hiciesemos por separado siempre estaría evaluando el valor original y único (en este caso namibia)
+En este ejemplo aplicamos namibia a prestarMillonesDolares 200, y ese resultado lo evaluamos en permitirExplotacionDe "mineria" para "conservar" el efecto de la primer funcion
+-}
+
+{-
+========Punto 4========
+Resolver todo el punto con orden superior, composición y aplicación parcial, no puede utilizar funciones auxiliares.
+Dada una lista de países conocer cuáles son los que pueden zafar, aquellos que tienen "Petróleo" entre sus riquezas naturales.-}
+
+{- 
+puedenZafar paises = filter tienePetroleo paises
+-}
+
+{-tienePetroleo :: Pais->Bool
+tienePetroleo pais = elem "petroleo" (recursosNaturales pais) -}
+
+puedenZafar :: [Pais]->[Pais]
+puedenZafar = filter $ elem "petroleo".recursosNaturales
+
+{-+-+-+-+-+-+-+-+-+-+-+-+
+Dada una lista de países, saber el total de deuda que el FMI tiene a su favor.-}
+
+totalDeudaFMI :: [Pais]->Dinero
+totalDeudaFMI paises = sum $ map deudaConFMI paises
+
+{-+-+-+-+-+-+-+-+-+-+-+-+
+Indicar en dónde apareció cada uno de los conceptos (solo una vez) y justificar qué ventaja tuvo para resolver el requerimiento. -}
+
+
+{- 
+========Punto 5========
+Debe resolver este punto con recursividad: dado un país y una lista de recetas, saber si la lista de recetas está ordenada de “peor” a “mejor”, 
+base al siguiente criterio: si aplicamos una a una cada receta, el PBI del país va de menor a mayor. 
+Recordamos que el Producto Bruto Interno surge de multiplicar el ingreso per cápita por la población activa (privada y pública). 
 -}
 
