@@ -128,13 +128,6 @@ En este ejemplo aplicamos namibia a prestarMillonesDolares 200, y ese resultado 
 Resolver todo el punto con orden superior, composición y aplicación parcial, no puede utilizar funciones auxiliares.
 Dada una lista de países conocer cuáles son los que pueden zafar, aquellos que tienen "Petróleo" entre sus riquezas naturales.-}
 
-{- 
-puedenZafar paises = filter tienePetroleo paises
--}
-
-{-tienePetroleo :: Pais->Bool
-tienePetroleo pais = elem "petroleo" (recursosNaturales pais) -}
-
 puedenZafar :: [Pais]->[Pais]
 puedenZafar = filter $ elem "petroleo".recursosNaturales
 
@@ -167,10 +160,14 @@ pbiPosReceta :: Receta->Pais->Dinero
 pbiPosReceta receta = pbi.aplicarReceta receta
 {- 
 ========Punto 6========
-Si un país tiene infinitos recursos naturales, modelado con esta función
+Si un país tiene infinitos recursos naturales, modelado con esta función-}
 recursosNaturalesInfinitos :: [String]
 recursosNaturalesInfinitos = "Energia" : recursosNaturalesInfinitos
-¿qué sucede evaluamos la función 4a con ese país? 
-¿y con la 4b?
-Justifique ambos puntos relacionándolos con algún concepto.
- -}
+-- ¿qué sucede evaluamos la función 4a con ese país? 
+    -- No podremos utilizar la funcion porque no terminaría nunca de evaluar si el pais tiene o no petroleo
+-- ¿y con la 4b?
+    {- No habría problema de utilizar la funcion porque Haskell utiliza Lazy Evaluation (Evaluacion diferida). 
+        Esta consiste en evaluar lo que uno necesita en el momento y no todo. Por ende, si me pide el totalDeudaFMI, 
+        a Haskell no le va a interesar evaluar la lista infinita de recursos naturales, 
+        si no que solo trabajará con el campo deudaConFMI de cada pais -}
+-- Justifique ambos puntos relacionándolos con algún concepto.
